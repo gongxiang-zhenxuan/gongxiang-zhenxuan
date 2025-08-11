@@ -1,0 +1,10 @@
+# 仅作用于 gongxiang-zhenxuan 子项目的 Git 忽略规则
+
+# Maven 构建输出目录（包括所有子模块）
+target/
+**/target/
+*/target/
+
+# Java 编译产物
+*.class
+hs_err_pid*
