@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "edit/delete/add/rename"
+    ],
+    "deny": []
+  }
+}
