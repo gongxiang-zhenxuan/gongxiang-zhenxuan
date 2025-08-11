@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>骑手端原型 · 收入与提现</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="mobile-frame">
+  <div class="header">
+    <a class="link-back" href="profile.html">返回</a>
+    <div class="title">收入与提现</div>
+  </div>
+  <div class="content">
+    <div class="kpi">
+      <div class="item"><div class="meta">账户余额</div><div style="font-size:22px;font-weight:800;">¥232.80</div></div>
+      <div class="item"><div class="meta">本月收入</div><div style="font-size:22px;font-weight:800;">¥3,482.60</div></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><div style="font-weight:700;">提现</div><div class="meta">到账 1-2 个工作日</div></div>
+      <div class="form" style="margin-top:8px;">
+        <div>
+          <div class="label">提现金额</div>
+          <input class="input" type="number" placeholder="输入金额，最小 ¥10" />
+        </div>
+        <div>
+          <div class="label">到账账户</div>
+          <select class="input">
+            <option>微信零钱 · 尾号 8899</option>
+            <option>银行卡 · 尾号 1027</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="alert('已提交提现申请')">提交提现</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;">收入明细</div>
+      <div class="row"><div class="meta">2025-08-08 · 配送费 · 订单 #B20240812012</div><div>+¥6.00</div></div>
+      <div class="row"><div class="meta">2025-08-08 · 小费 · 订单 #B20240812009</div><div>+¥2.00</div></div>
+      <div class="row"><div class="meta">2025-08-07 · 奖励 · 满 10 单</div><div>+¥20.00</div></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a href="index.html">任务</a>
+    <a class="active" href="profile.html">我的</a>
+  </div>
+</div>
+</body>
+</html>
+
+

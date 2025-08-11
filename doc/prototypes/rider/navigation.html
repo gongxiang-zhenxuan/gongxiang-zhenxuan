@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>骑手端原型 · 路线导航</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="mobile-frame">
+  <div class="header">
+    <a class="link-back" href="dispatch_list.html">返回</a>
+    <div class="title">路线导航</div>
+  </div>
+  <div class="content">
+    <div class="card" style="height:420px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#e0f2fe,#f1f5f9)">
+      <div style="text-align:center; color:#0f172a;">
+        <div style="font-size:48px;">🗺️</div>
+        <div style="margin-top:8px;">地图占位 · 集成腾讯地图 SDK</div>
+        <div class="meta" style="margin-top:4px;">起点：餐厅 · 终点：收货地址 · 3.2km</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="alert('已调用外部地图 App')">外部导航</button>
+      <a class="btn btn-ghost" href="order_detail.html">返回订单</a>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a class="active" href="index.html">任务</a>
+    <a href="profile.html">我的</a>
+  </div>
+</div>
+</body>
+</html>
+
+
