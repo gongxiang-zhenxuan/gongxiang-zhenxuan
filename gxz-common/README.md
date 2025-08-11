@@ -21,8 +21,9 @@
 
 ## 技术栈
 
-- **Java**: 17+
-- **Spring Boot**: 3.x
+- **Java**: 8
+- **Spring Boot**: 2.7.x
+- **Spring Cloud**: 2021.x
 - **Maven**: 项目构建工具
 - **Lombok**: 简化代码编写
 - **Jackson**: JSON 序列化/反序列化
