@@ -1,0 +1,141 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gxz-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: public
+        group: DEFAULT_GROUP
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # 用户服务路由
+        - id: gxz-user
+          uri: lb://gxz-user
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - StripPrefix=2
+            
+        # 商户服务路由
+        - id: gxz-merchant
+          uri: lb://gxz-merchant
+          predicates:
+            - Path=/api/merchant/**
+          filters:
+            - StripPrefix=2
+            
+        # 商品服务路由
+        - id: gxz-goods
+          uri: lb://gxz-goods
+          predicates:
+            - Path=/api/goods/**
+          filters:
+            - StripPrefix=2
+            
+        # 订单服务路由
+        - id: gxz-order
+          uri: lb://gxz-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=2
+            
+        # 支付服务路由
+        - id: gxz-payment
+          uri: lb://gxz-payment
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=2
+            
+        # 营销服务路由
+        - id: gxz-promotion
+          uri: lb://gxz-promotion
+          predicates:
+            - Path=/api/promotion/**
+          filters:
+            - StripPrefix=2
+            
+        # 配送服务路由
+        - id: gxz-delivery
+          uri: lb://gxz-delivery
+          predicates:
+            - Path=/api/delivery/**
+          filters:
+            - StripPrefix=2
+            
+        # 结算服务路由
+        - id: gxz-settlement
+          uri: lb://gxz-settlement
+          predicates:
+            - Path=/api/settlement/**
+          filters:
+            - StripPrefix=2
+            
+        # 钱包服务路由
+        - id: gxz-wallet
+          uri: lb://gxz-wallet
+          predicates:
+            - Path=/api/wallet/**
+          filters:
+            - StripPrefix=2
+            
+        # 内容服务路由
+        - id: gxz-content
+          uri: lb://gxz-content
+          predicates:
+            - Path=/api/content/**
+          filters:
+            - StripPrefix=2
+            
+        # 管理后台路由
+        - id: gxz-admin
+          uri: lb://gxz-admin
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - StripPrefix=2
+      
+      # 全局过滤器配置
+      default-filters:
+        - name: GlobalRequestLog
+        - name: GlobalCors
+          args:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                allowCredentials: true
+                maxAge: 3600
+
+# 日志配置
+logging:
+  level:
+    com.gongxiang.zhenxuan.gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always

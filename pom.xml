@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.gongxiang.zhenxuan</groupId>
+  <artifactId>gongxiang-zhenxuan</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>GongXiang ZhenXuan - Parent</name>
+  <description>贡享臻选外卖平台 - 微服务架构</description>
+  
+  <properties>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>2.7.0</spring-boot.version>
+    <spring-cloud.version>2021.0.3</spring-cloud.version>
+    <dubbo.version>3.0.9</dubbo.version>
+  </properties>
+  
+  <modules>
+    <module>gxz-common</module>
+    <module>gxz-gateway</module>
+    <module>gxz-user</module>
+    <module>gxz-merchant</module>
+    <module>gxz-goods</module>
+    <module>gxz-order</module>
+    <module>gxz-payment</module>
+    <module>gxz-promotion</module>
+    <module>gxz-delivery</module>
+    <module>gxz-settlement</module>
+    <module>gxz-wallet</module>
+    <module>gxz-content</module>
+    <module>gxz-admin</module>
+  </modules>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.dubbo</groupId>
+        <artifactId>dubbo-bom</artifactId>
+        <version>${dubbo.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+</project>
