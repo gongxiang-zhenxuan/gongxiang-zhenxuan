@@ -1,0 +1,162 @@
+# 贡享臻选项目自定义命令配置
+# 这些命令专门为我们的微服务架构优化
+
+commands:
+  # ==================== 服务管理命令 ====================
+  start-gateway:
+    description: "启动网关服务"
+    command: "cd gxz-gateway && ./start.sh start"
+    working_directory: "."
+    
+  stop-gateway:
+    description: "停止网关服务"
+    command: "cd gxz-gateway && ./start.sh stop"
+    working_directory: "."
+    
+  restart-gateway:
+    description: "重启网关服务"
+    command: "cd gxz-gateway && ./start.sh restart"
+    working_directory: "."
+    
+  gateway-logs:
+    description: "查看网关日志"
+    command: "cd gxz-gateway && ./start.sh logs"
+    working_directory: "."
+    
+  # ==================== 构建命令 ====================
+  build-all:
+    description: "构建所有微服务"
+    command: "mvn clean package -T 4"
+    working_directory: "."
+    
+  build-service:
+    description: "构建指定微服务"
+    command: "cd {service} && mvn clean package"
+    parameters:
+      service:
+        type: "choice"
+        choices: ["gxz-user", "gxz-merchant", "gxz-order", "gxz-payment", "gxz-delivery", "gxz-goods", "gxz-admin"]
+        description: "选择要构建的服务"
+    
+  quick-build:
+    description: "快速构建（跳过测试）"
+    command: "mvn clean package -DskipTests -T 4"
+    working_directory: "."
+    
+  # ==================== 测试命令 ====================
+  test-service:
+    description: "运行指定服务的测试"
+    command: "cd {service} && mvn test"
+    parameters:
+      service:
+        type: "choice"
+        choices: ["gxz-user", "gxz-merchant", "gxz-order", "gxz-payment", "gxz-delivery", "gxz-goods", "gxz-admin"]
+        description: "选择要测试的服务"
+        
+  test-all:
+    description: "运行所有服务的测试"
+    command: "mvn test"
+    working_directory: "."
+        
+  integration-test:
+    description: "运行集成测试"
+    command: "mvn verify -P integration-test"
+    working_directory: "."
+    
+  # ==================== 代码质量检查 ====================
+  code-style:
+    description: "检查代码风格"
+    command: "mvn checkstyle:check"
+    working_directory: "."
+    
+  code-quality:
+    description: "运行完整的代码质量检查"
+    command: "mvn spotbugs:check checkstyle:check pmd:check"
+    working_directory: "."
+    
+  # ==================== 数据库管理命令 ====================
+  db-status:
+    description: "检查数据库连接状态"
+    command: "mysql -h localhost -u root -p -e 'SELECT VERSION();'"
+    working_directory: "."
+    
+  # ==================== Git 操作命令 ====================
+  git-status-all:
+    description: "查看所有服务的 Git 状态"
+    command: |
+      echo "=== 项目整体状态 ==="
+      git status --short
+      echo ""
+      for service in gxz-*; do
+        if [ -d "$service" ]; then
+          echo "=== $service ==="
+          cd "$service" && git status --short && cd ..
+          echo ""
+        fi
+      done
+    working_directory: "."
+    
+  # ==================== 开发辅助命令 ====================
+  clean-all:
+    description: "清理所有构建产物"
+    command: "mvn clean && find . -name 'target' -type d -exec rm -rf {} + 2>/dev/null || true"
+    working_directory: "."
+    
+  dependency-tree:
+    description: "查看依赖树"
+    command: "mvn dependency:tree"
+    working_directory: "."
+    
+  find-service-by-port:
+    description: "根据端口查找运行的服务"
+    command: "lsof -i:{port}"
+    parameters:
+      port:
+        type: "number"
+        description: "端口号"
+        
+  # ==================== 日志查看命令 ====================
+  logs-service:
+    description: "查看指定服务的日志"
+    command: "tail -f {service}/{service}-provider/logs/application.log"
+    parameters:
+      service:
+        type: "choice"
+        choices: ["gxz-user", "gxz-merchant", "gxz-order", "gxz-payment", "gxz-delivery", "gxz-goods", "gxz-admin"]
+        description: "选择要查看日志的服务"
+        
+  # ==================== 环境切换命令 ====================
+  switch-env:
+    description: "切换开发环境"
+    command: |
+      echo "切换到 {env} 环境"
+      echo "SPRING_PROFILES_ACTIVE={env}" > .env
+      echo "环境已切换到: {env}"
+    parameters:
+      env:
+        type: "choice"
+        choices: ["dev", "test", "staging"]
+        description: "目标环境"
+        
+  # ==================== 代码生成命令 ====================
+  generate-crud:
+    description: "生成 CRUD 代码模板"
+    command: |
+      echo "正在为 {entity} 生成 CRUD 代码..."
+      mkdir -p {service}/src/main/java/com/gongxiang/zhenxuan/{module}/{layer}
+      echo "CRUD 代码结构已创建，请使用 Claude Code 生成具体代码"
+    parameters:
+      entity:
+        type: "string"
+        description: "实体类名称（如：User, Order, Product）"
+      service:
+        type: "choice"
+        choices: ["gxz-user", "gxz-merchant", "gxz-order", "gxz-goods", "gxz-payment", "gxz-delivery", "gxz-admin"]
+        description: "目标服务"
+      module:
+        type: "string"
+        description: "模块名称"
+      layer:
+        type: "choice"
+        choices: ["controller", "service", "mapper", "entity"]
+        description: "要生成的层"

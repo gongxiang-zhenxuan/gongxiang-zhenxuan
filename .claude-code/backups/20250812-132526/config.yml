@@ -1,0 +1,90 @@
+build:
+  java_version: '8'
+  main_command: mvn clean package
+  spring_boot_version: 2.7.0
+  test_command: mvn test
+  tool: maven
+code_generation:
+  author: gongxiang-zhenxuan
+  base_package: com.gongxiang.zhenxuan
+database:
+  cache: redis
+  database: gongxiang_zhenxuan
+  host: localhost
+  port: 3306
+  primary: mysql
+discovery:
+  namespace: gxz-dev
+  type: nacos
+  url: localhost:8848
+documentation:
+  api_docs_path: ./docs/api
+  architecture_docs_path: ./docs/architecture
+  auto_generate: true
+ignore:
+- target/
+- '*.log'
+- .idea/
+- node_modules/
+- '*.class'
+- .DS_Store
+- '*.iml'
+project:
+  description: 食品外卖和电商平台微服务架构
+  framework: spring-boot
+  name: 贡享臻选 (GongXiang ZhenXuan)
+  type: java-microservices
+  version: 1.0.0
+services:
+  admin:
+    name: gxz-admin
+    path: ./gxz-admin
+    port: 8087
+  common:
+    name: gxz-common
+    path: ./gxz-common
+    port: 8088
+  content:
+    name: gxz-content
+    path: ./gxz-content
+    port: 8089
+  delivery:
+    name: gxz-delivery
+    path: ./gxz-delivery
+    port: 8085
+  gateway:
+    name: gxz-gateway
+    path: ./gxz-gateway
+    port: 8080
+  goods:
+    name: gxz-goods
+    path: ./gxz-goods
+    port: 8086
+  merchant:
+    name: gxz-merchant
+    path: ./gxz-merchant
+    port: 8082
+  order:
+    name: gxz-order
+    path: ./gxz-order
+    port: 8083
+  payment:
+    name: gxz-payment
+    path: ./gxz-payment
+    port: 8084
+  promotion:
+    name: gxz-promotion
+    path: ./gxz-promotion
+    port: 8091
+  settlement:
+    name: gxz-settlement
+    path: ./gxz-settlement
+    port: 8092
+  user:
+    name: gxz-user
+    path: ./gxz-user
+    port: 8081
+  wallet:
+    name: gxz-wallet
+    path: ./gxz-wallet
+    port: 8093

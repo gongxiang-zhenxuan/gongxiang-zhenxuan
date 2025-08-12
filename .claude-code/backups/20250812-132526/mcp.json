@@ -1,0 +1,79 @@
+{
+  "mcpServers": {
+    "mysql": {
+      "command": "npx",
+      "args": [
+        "@anthropic/mcp-mysql",
+        "--host", "${MYSQL_HOST:-localhost}",
+        "--port", "${MYSQL_PORT:-3306}",
+        "--database", "${MYSQL_DATABASE:-gongxiang_zhenxuan}",
+        "--username", "${MYSQL_USERNAME:-root}",
+        "--password", "${MYSQL_PASSWORD}"
+      ],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_DATABASE": "gongxiang_zhenxuan",
+        "MYSQL_USERNAME": "root",
+        "MYSQL_PASSWORD": "Cz159csa"
+      },
+      "description": "MySQL 数据库连接，用于查询和分析数据库结构"
+    },
+    "git": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-git"],
+      "cwd": ".",
+      "description": "Git 版本控制集成，用于管理代码版本和历史"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-filesystem", "."],
+      "description": "文件系统访问，用于读取和修改项目文件"
+    },
+    "maven": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-maven"],
+      "cwd": ".",
+      "description": "Maven 构建工具集成，用于项目构建和依赖管理"
+    },
+    "spring-boot": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-spring-boot"],
+      "cwd": ".",
+      "description": "Spring Boot 框架集成，用于微服务开发"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-sequential-thinking"],
+      "description": "序列化思考工具，用于复杂问题的逐步分析和推理"
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-puppeteer"],
+      "env": {
+        "PUPPETEER_EXECUTABLE_PATH": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+      },
+      "description": "浏览器自动化工具，用于网页测试、截图和数据抓取"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-context7"],
+      "description": "库文档和API文档获取工具，用于获取最新的技术文档"
+    },
+    "promptx": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-promptx"],
+      "env": {
+        "PROMPTX_WORKSPACE": ".",
+        "PROMPTX_PROJECT_TYPE": "java-microservices"
+      },
+      "description": "AI 专业能力启动器，提供丰富的专业角色和工具集成"
+    }
+  },
+  "globalSettings": {
+    "timeout": 30000,
+    "retries": 3,
+    "logLevel": "info",
+    "maxConcurrentConnections": 10
+  }
+}

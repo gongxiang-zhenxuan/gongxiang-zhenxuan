@@ -1,0 +1,165 @@
+# YOLO 操作监控配置 - 贡享臻选项目
+# 监控和审计 Claude Code 的自动化操作
+
+monitoring:
+  # 操作日志
+  logging:
+    enabled: true
+    file: ".claude-code/logs/yolo.log"
+    level: "info"
+    format: "{timestamp} [{level}] {operation} - {message} - {user} - {context}"
+    
+  # 通知设置
+  notifications:
+    # 高风险操作通知
+    high_risk_operations:
+      - "database_update"
+      - "git_merge_to_main"
+      - "production_deploy"
+      - "delete_operations"
+      - "security_config_changes"
+    
+    # 通知方式（开发环境可配置）
+    methods:
+      console:
+        enabled: true
+        level: "warning"
+      file:
+        enabled: true
+        file: ".claude-code/logs/notifications.log"
+      # email:
+      #   enabled: false
+      #   recipients: ["dev-team@company.com"]
+      # slack:
+      #   enabled: false
+      #   webhook: "${SLACK_WEBHOOK_URL}"
+      #   channel: "#claude-code-alerts"
+        
+  # 审计追踪
+  audit:
+    enabled: true
+    retention_days: 30
+    include_context: true
+    
+    # 审计内容
+    track_operations:
+      - "file_modifications"
+      - "git_operations"
+      - "build_commands"
+      - "database_queries"
+      - "config_changes"
+    
+    # 审计报告
+    reports:
+      daily_summary: true
+      weekly_analysis: true
+      monthly_trends: true
+    
+  # 自动回滚条件
+  auto_rollback:
+    enabled: true
+    conditions:
+      - "test_failure"
+      - "build_failure"
+      - "security_violation"
+      - "syntax_error"
+    
+    # 回滚策略
+    strategies:
+      git_reset: true
+      backup_restore: true
+      config_revert: true
+
+# 操作分类和风险评级
+operation_classification:
+  # 低风险操作
+  low_risk:
+    - "read_files"
+    - "view_logs"
+    - "run_tests"
+    - "code_analysis"
+    - "documentation_generation"
+    
+  # 中风险操作
+  medium_risk:
+    - "file_creation"
+    - "file_modification"
+    - "git_commit"
+    - "local_deployment"
+    - "database_select"
+    
+  # 高风险操作
+  high_risk:
+    - "file_deletion"
+    - "git_merge"
+    - "database_modification"
+    - "production_operations"
+    - "security_changes"
+
+# 用户权限和限制
+user_permissions:
+  # 角色定义
+  roles:
+    developer:
+      allowed_risk_levels: ["low", "medium"]
+      daily_operation_limit: 100
+      requires_approval: ["high_risk"]
+      
+    senior_developer:
+      allowed_risk_levels: ["low", "medium", "high"]
+      daily_operation_limit: 200
+      requires_approval: ["production_operations"]
+      
+    tech_lead:
+      allowed_risk_levels: ["low", "medium", "high"]
+      daily_operation_limit: 500
+      requires_approval: []
+
+# 监控仪表板配置
+dashboard:
+  enabled: true
+  update_interval: 300  # 5分钟
+  
+  # 显示指标
+  metrics:
+    - "operations_per_hour"
+    - "success_rate"
+    - "error_rate"
+    - "rollback_frequency"
+    - "user_activity"
+    
+  # 告警阈值
+  alerts:
+    error_rate_threshold: 0.1      # 10% 错误率
+    operation_spike_threshold: 50   # 操作激增阈值
+    rollback_frequency_threshold: 5 # 回滚频率
+
+# 性能监控
+performance:
+  # 操作耗时监控
+  timing:
+    enabled: true
+    slow_operation_threshold: 30000  # 30秒
+    
+  # 资源使用监控
+  resources:
+    memory_threshold: "80%"
+    cpu_threshold: "80%"
+    disk_threshold: "90%"
+
+# 安全监控
+security:
+  # 异常行为检测
+  anomaly_detection:
+    enabled: true
+    patterns:
+      - "unusual_access_patterns"
+      - "privilege_escalation_attempts"
+      - "suspicious_file_operations"
+      - "unexpected_git_operations"
+    
+  # 访问控制
+  access_control:
+    track_access_attempts: true
+    log_failed_authentications: true
+    monitor_permission_changes: true

@@ -1,0 +1,95 @@
+# Claude Code 项目配置文件 - 贡享臻选团队版
+# 此文件为团队共享配置，请勿添加个人敏感信息
+
+project:
+  name: "贡享臻选 (GongXiang ZhenXuan)"
+  type: "java-microservices"
+  framework: "spring-boot"
+  version: "1.0.0"
+  description: "食品外卖和电商平台微服务架构"
+  
+# 构建工具配置
+build:
+  tool: "maven"
+  java_version: "8"
+  spring_boot_version: "2.7.0"
+  main_command: "mvn clean package"
+  test_command: "mvn test"
+  
+# 微服务配置
+services:
+  gateway:
+    name: "gxz-gateway"
+    port: 8080
+    path: "./gxz-gateway"
+    start_script: "./start.sh start"
+    
+  user:
+    name: "gxz-user"
+    port: 8081
+    path: "./gxz-user"
+    
+  merchant:
+    name: "gxz-merchant"
+    port: 8082
+    path: "./gxz-merchant"
+    
+  order:
+    name: "gxz-order"
+    port: 8083
+    path: "./gxz-order"
+    
+  payment:
+    name: "gxz-payment"
+    port: 8084
+    path: "./gxz-payment"
+    
+  delivery:
+    name: "gxz-delivery"
+    port: 8085
+    path: "./gxz-delivery"
+    
+  goods:
+    name: "gxz-goods"
+    port: 8086
+    path: "./gxz-goods"
+    
+  admin:
+    name: "gxz-admin"
+    port: 8087
+    path: "./gxz-admin"
+  
+# 服务发现配置
+discovery:
+  type: "nacos"
+  url: "localhost:8848"
+  namespace: "gxz-dev"
+    
+# 数据库配置
+database:
+  primary: "mysql"
+  cache: "redis"
+  host: "localhost"
+  port: 3306
+  database: "gongxiang_zhenxuan"
+  
+# 忽略文件和目录
+ignore:
+  - "target/"
+  - "*.log"
+  - ".idea/"
+  - "node_modules/"
+  - "*.class"
+  - ".DS_Store"
+  - "*.iml"
+  
+# 代码生成配置
+code_generation:
+  base_package: "com.gongxiang.zhenxuan"
+  author: "gongxiang-zhenxuan"
+  
+# 文档配置
+documentation:
+  api_docs_path: "./docs/api"
+  architecture_docs_path: "./docs/architecture"
+  auto_generate: true

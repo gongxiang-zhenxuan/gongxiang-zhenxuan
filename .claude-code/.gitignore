@@ -1,0 +1,23 @@
+# 忽略敏感信息
+mcp-env.local.sh
+*.log
+logs/
+*.tmp
+
+# 忽略个人配置
+personal-config.yml
+user-preferences.yml
+
+# 保留团队配置
+!config.yml
+!mcp.json
+!env.yml
+!commands.yml
+!security.yml
+!tdd.yml
+!yolo-monitor.yml
+!templates/
+!scripts/
+!README.md
+!setup.sh
+!.gitignore

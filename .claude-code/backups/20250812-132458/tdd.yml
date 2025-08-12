@@ -1,0 +1,200 @@
+# TDD 配置 - 贡享臻选项目测试驱动开发
+# 为微服务架构优化的 TDD 工作流配置
+
+tdd:
+  enabled: true
+  
+  # 测试框架配置
+  frameworks:
+    unit_testing:
+      java: "junit5"
+      spring: "spring-boot-test"
+      mocking: "mockito"
+      
+    integration_testing:
+      spring: "spring-boot-test"
+      database: "testcontainers"
+      web: "spring-boot-test-web"
+      
+  # 测试模板
+  templates:
+    unit_test: |
+      package {package};
+      
+      import org.junit.jupiter.api.Test;
+      import org.junit.jupiter.api.BeforeEach;
+      import org.junit.jupiter.api.DisplayName;
+      import org.mockito.Mock;
+      import org.mockito.junit.jupiter.MockitoExtension;
+      import org.junit.jupiter.api.extension.ExtendWith;
+      
+      import static org.junit.jupiter.api.Assertions.*;
+      import static org.mockito.Mockito.*;
+      
+      @ExtendWith(MockitoExtension.class)
+      @DisplayName("{class_name} 单元测试")
+      class {class_name}Test {
+      
+          @Mock
+          private {dependency} {dependency_name};
+          
+          private {class_name} {instance_name};
+          
+          @BeforeEach
+          void setUp() {
+              {instance_name} = new {class_name}({dependency_name});
+          }
+          
+          @Test
+          @DisplayName("应该{test_description}")
+          void should{test_method}() {
+              // Given (准备测试数据)
+              
+              // When (执行被测试方法)
+              
+              // Then (验证结果)
+              
+          }
+      }
+      
+    integration_test: |
+      package {package};
+      
+      import org.junit.jupiter.api.Test;
+      import org.springframework.boot.test.context.SpringBootTest;
+      import org.springframework.test.context.ActiveProfiles;
+      import org.springframework.transaction.annotation.Transactional;
+      import org.testcontainers.junit.jupiter.Testcontainers;
+      
+      @SpringBootTest
+      @ActiveProfiles("test")
+      @Testcontainers
+      @Transactional
+      class {class_name}IntegrationTest {
+      
+          @Test
+          void should{test_method}() {
+              // Given
+              
+              // When
+              
+              // Then
+              
+          }
+      }
+      
+  # TDD 规则
+  rules:
+    # 测试优先
+    test_first: true
+    
+    # 代码覆盖率要求
+    coverage:
+      minimum: 80
+      target: 90
+      
+    # 测试命名规范
+    naming_convention:
+      test_class: "{ClassName}Test"
+      test_method: "should{ExpectedBehavior}When{Condition}"
+      
+    # 自动化
+    automation:
+      run_tests_on_save: true
+      generate_missing_tests: true
+      update_tests_on_refactor: true
+
+# 微服务特定 TDD 配置
+services:
+  gxz-user:
+    test_scenarios:
+      user_registration:
+        description: "用户注册功能测试"
+        tests:
+          - "should_register_new_user_successfully"
+          - "should_reject_duplicate_phone_number"
+          - "should_validate_phone_number_format"
+          - "should_encrypt_password"
+          
+      user_authentication:
+        description: "用户认证功能测试"
+        tests:
+          - "should_authenticate_valid_credentials"
+          - "should_reject_invalid_credentials"
+          - "should_lock_account_after_failed_attempts"
+          
+    mocks:
+      external_services:
+        - "SmsService"
+        - "WechatApiService"
+        - "RedisService"
+
+  gxz-order:
+    test_scenarios:
+      order_creation:
+        description: "订单创建功能测试"
+        tests:
+          - "should_create_order_with_valid_products"
+          - "should_calculate_total_amount_correctly"
+          - "should_apply_coupon_discount"
+          - "should_check_product_inventory"
+          
+      order_status_management:
+        description: "订单状态管理测试"
+        tests:
+          - "should_update_order_status"
+          - "should_send_notification_on_status_change"
+          - "should_handle_payment_callback"
+          
+    integration_tests:
+      database_operations:
+        - "order_persistence"
+        - "order_query"
+        - "order_update"
+      external_services:
+        - "payment_service_integration"
+        - "inventory_service_integration"
+        - "notification_service_integration"
+
+  gxz-payment:
+    test_scenarios:
+      wechat_payment:
+        description: "微信支付功能测试"
+        tests:
+          - "should_create_payment_order"
+          - "should_handle_payment_callback"
+          - "should_verify_payment_signature"
+          - "should_handle_payment_failure"
+    
+    special_requirements:
+      security_tests: true
+      mock_external_apis: true
+      test_data_isolation: true
+
+# 测试数据管理
+test_data:
+  users:
+    valid_user:
+      phone: "13812345678"
+      password: "password123"
+      name: "测试用户"
+    invalid_user:
+      phone: "invalid_phone"
+      password: "weak"
+      
+  orders:
+    sample_order:
+      user_id: 1
+      total_amount: 59.90
+      status: "PENDING"
+      items:
+        - product_id: 1
+          quantity: 2
+          price: 29.95
+          
+  products:
+    sample_product:
+      name: "麻辣烫"
+      price: 29.95
+      category: "热菜"
+      merchant_id: 1

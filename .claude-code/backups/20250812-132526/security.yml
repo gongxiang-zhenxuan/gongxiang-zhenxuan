@@ -1,0 +1,97 @@
+# YOLO 模式安全配置 - 贡享臻选项目
+# 这个配置确保团队在使用 Claude Code 时的安全性
+
+yolo_mode:
+  enabled: true
+  level: "moderate"  # safe, moderate, aggressive
+  
+  # 允许的自动操作
+  allowed_operations:
+    file_operations:
+      - "create"
+      - "edit"
+      - "rename"
+      - "copy"
+    
+    build_operations:
+      - "compile"
+      - "test"
+      - "package"
+    
+    git_operations:
+      - "add"
+      - "commit"
+      - "push"      # 仅在安全分支
+      - "pull"
+      - "merge"     # 仅在开发分支
+    
+    database_operations:
+      - "select"
+      - "insert"    # 仅测试数据
+  
+  # 禁止的操作
+  forbidden_operations:
+    - "delete_files"
+    - "drop_tables"
+    - "production_deploy"
+    - "system_commands"
+    
+  # 安全分支
+  safe_branches:
+    - "develop"
+    - "feature/*"
+    - "hotfix/*"
+    - "test/*"
+    
+  # 保护分支
+  protected_branches:
+    - "main"
+    - "master"
+    - "release/*"
+    
+  # 安全环境
+  safe_environments:
+    - "development"
+    - "test"
+    - "staging"
+    
+  # 生产环境保护
+  protected_environments:
+    - "production"
+    - "prod"
+
+# 贡享臻选项目特定安全规则
+project_security:
+  # 关键文件保护
+  protected_files:
+    - "application-prod.yml"
+    - "application-production.yml"
+    - "*.properties"
+    - "pom.xml"
+    
+  # 敏感目录保护
+  protected_directories:
+    - "config/prod/"
+    - "scripts/deploy/"
+    - "secrets/"
+    
+  # 微服务特定规则
+  service_rules:
+    gxz-payment:
+      # 支付服务特殊保护
+      protected_files:
+        - "**/PaymentController.java"
+        - "**/PaymentService.java"
+        - "**/WechatPayConfig.java"
+      forbidden_operations:
+        - "auto_deploy"
+        - "auto_test_production"
+        
+    gxz-user:
+      # 用户服务规则
+      allowed_operations:
+        - "create_test_users"
+        - "update_user_info"
+      forbidden_operations:
+        - "delete_users"
+        - "access_sensitive_data"
