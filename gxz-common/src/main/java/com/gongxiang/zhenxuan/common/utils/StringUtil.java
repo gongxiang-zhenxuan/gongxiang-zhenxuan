@@ -103,7 +103,7 @@ public class StringUtil {
         }
         
         int maskLength = Math.min(username.length() - 2, 4);
-        String masked = username.substring(0, 1) + "*".repeat(maskLength) + username.substring(username.length() - 1);
+        String masked = username.substring(0, 1) + repeatChar('*', maskLength) + username.substring(username.length() - 1);
         return masked + "@" + domain;
     }
 
@@ -199,13 +199,31 @@ public class StringUtil {
     }
 
     /**
+     * 字符重复
+     */
+    public static String repeatChar(char ch, int times) {
+        if (times <= 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < times; i++) {
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
+
+    /**
      * 字符串重复
      */
     public static String repeat(String str, int times) {
-        if (str == null || times < 0) {
+        if (str == null || times <= 0) {
             return "";
         }
-        return str.repeat(times);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < times; i++) {
+            sb.append(str);
+        }
+        return sb.toString();
     }
 
     /**
@@ -219,7 +237,7 @@ public class StringUtil {
         if (pads <= 0) {
             return str;
         }
-        return String.valueOf(padChar).repeat(pads) + str;
+        return repeatChar(padChar, pads) + str;
     }
 
     /**
@@ -233,6 +251,6 @@ public class StringUtil {
         if (pads <= 0) {
             return str;
         }
-        return str + String.valueOf(padChar).repeat(pads);
+        return str + repeatChar(padChar, pads);
     }
 }

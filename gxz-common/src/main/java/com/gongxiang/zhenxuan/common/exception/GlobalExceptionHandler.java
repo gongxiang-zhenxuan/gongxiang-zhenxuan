@@ -116,6 +116,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {
         log.error("未知异常", e);
-        return Result.error(ResultCode.SYSTEM_ERROR);
+        return Result.fail(ResultCode.SYSTEM_ERROR);
     }
 }

@@ -108,6 +108,20 @@ public class Result<T> implements Serializable {
     }
 
     /**
+     * 失败响应根据ResultCode
+     */
+    public static <T> Result<T> fail(ResultCode resultCode) {
+        return new Result<>(resultCode.getCode(), resultCode.getMessage());
+    }
+
+    /**
+     * 失败响应带消息
+     */
+    public static <T> Result<T> fail(String message) {
+        return new Result<>(ResultCode.ERROR.getCode(), message);
+    }
+
+    /**
      * 判断是否成功
      */
     public boolean isSuccess() {

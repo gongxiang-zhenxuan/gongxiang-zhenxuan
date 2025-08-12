@@ -57,6 +57,8 @@ public enum ResultCode {
     ORDER_ALREADY_GRABBED(6003, "订单已被抢单"),
     RIDER_BUSY(6004, "骑手忙碌中"),
     DELIVERY_AREA_NOT_SUPPORT(6005, "配送区域不支持"),
+    RIDER_PHONE_EXISTS(6006, "手机号已存在"),
+    RIDER_IDCARD_EXISTS(6007, "身份证号已存在"),
 
     // 营销相关状态码 7xxx
     COUPON_NOT_FOUND(7001, "优惠券不存在"),
