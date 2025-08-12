@@ -160,3 +160,63 @@ commands:
         type: "choice"
         choices: ["controller", "service", "mapper", "entity"]
         description: "要生成的层"
+        
+  # ==================== 自动提交命令 ====================
+  auto-commit:
+    description: "智能自动提交代码"
+    command: "./.claude-code/scripts/auto-commit.sh --commit {description}"
+    parameters:
+      description:
+        type: "string"
+        description: "提交描述（可选，留空自动生成）"
+        
+  commit-done:
+    description: "标记需求完成并提交"
+    command: "./.claude-code/scripts/commit-helper.sh done {description}"
+    parameters:
+      description:
+        type: "string"
+        description: "完成的功能描述"
+        
+  commit-fix:
+    description: "修复问题并提交"
+    command: "./.claude-code/scripts/commit-helper.sh fix {description}"
+    parameters:
+      description:
+        type: "string"
+        description: "修复的问题描述"
+        
+  commit-feat:
+    description: "新功能完成并提交"
+    command: "./.claude-code/scripts/commit-helper.sh feat {description}"
+    parameters:
+      description:
+        type: "string"
+        description: "新功能描述"
+        
+  start-feature:
+    description: "开始功能开发工作流"
+    command: "./.claude-code/scripts/commit-workflow.sh --feature {feature_name}"
+    parameters:
+      feature_name:
+        type: "string"
+        description: "功能名称（如：用户登录、订单管理）"
+        
+  project-status:
+    description: "查看项目开发状态"
+    command: "./.claude-code/scripts/commit-workflow.sh --status"
+    working_directory: "."
+    
+  team-sync:
+    description: "执行团队同步工作流"
+    command: "./.claude-code/scripts/commit-workflow.sh --sync"
+    working_directory: "."
+    
+  monitor-completion:
+    description: "启动需求完成监控"
+    command: "./.claude-code/scripts/auto-commit.sh --monitor {interval}"
+    parameters:
+      interval:
+        type: "number"
+        default: 30
+        description: "监控间隔（秒）"

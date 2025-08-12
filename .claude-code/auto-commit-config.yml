@@ -1,0 +1,156 @@
+# Claude Code 自动提交配置
+# 配置自动提交的行为和规则
+
+auto_commit:
+  # 基础设置
+  enabled: true
+  mode: "interactive"  # interactive, silent, monitor
+  
+  # 提交规则
+  rules:
+    # 自动检查
+    pre_commit_checks:
+      java_compile: true
+      config_validation: true
+      large_file_check: true
+      max_file_size: "10MB"
+      
+    # 提交消息规范
+    commit_format:
+      use_conventional: true  # 使用约定式提交格式
+      include_scope: true
+      include_details: true
+      max_subject_length: 72
+      
+    # 自动推送
+    auto_push:
+      enabled: false
+      branches: ["develop", "feature/*"]
+      excluded_branches: ["main", "master", "release/*"]
+
+  # 需求完成检测
+  completion_detection:
+    enabled: true
+    monitor_interval: 30  # 秒
+    
+    # 完成标记模式
+    completion_patterns:
+      - "TODO.*->.*DONE"
+      - "@TODO.*->.*@DONE"
+      - "FIXME.*->.*FIXED"
+      - "//\\s*TODO:.*->\\s*//\\s*DONE:"
+      - "\\*\\s*TODO:.*->\\s*\\*\\s*DONE:"
+      
+    # 监控文件类型
+    monitored_files:
+      - "*.java"
+      - "*.js"
+      - "*.ts"
+      - "*.vue"
+      - "*.md"
+      
+    # 排除目录
+    excluded_directories:
+      - "target/"
+      - "node_modules/"
+      - ".git/"
+      - "logs/"
+
+  # 智能提交类型检测
+  commit_types:
+    feat:
+      patterns:
+        - "^A.*\\.java$"  # 新增 Java 文件
+        - "新增|添加|实现|增加"
+      description: "新功能"
+      
+    fix:
+      patterns:
+        - "^M.*\\.java$"  # 修改 Java 文件
+        - "修复|解决|fix|bug"
+      description: "Bug修复"
+      
+    test:
+      patterns:
+        - "test.*\\.java$"
+        - ".*Test\\.java$"
+      description: "测试"
+      
+    docs:
+      patterns:
+        - "\\.md$"
+        - "\\.txt$"
+        - "README"
+      description: "文档"
+      
+    style:
+      patterns:
+        - "\\.css$"
+        - "\\.scss$"
+        - "样式|style"
+      description: "样式"
+      
+    refactor:
+      patterns:
+        - "重构|refactor"
+      description: "重构"
+      
+    config:
+      patterns:
+        - "pom\\.xml$"
+        - "\\.yml$"
+        - "\\.properties$"
+        - "\\.json$"
+      description: "配置"
+
+  # 服务范围映射
+  service_scopes:
+    gxz-user: "用户服务"
+    gxz-merchant: "商户服务"
+    gxz-order: "订单服务"
+    gxz-payment: "支付服务"
+    gxz-delivery: "配送服务"
+    gxz-goods: "商品服务"
+    gxz-admin: "管理后台"
+    gxz-gateway: "网关服务"
+    gxz-common: "公共组件"
+    gxz-content: "内容服务"
+    gxz-promotion: "促销服务"
+    gxz-settlement: "结算服务"
+    gxz-wallet: "钱包服务"
+
+  # 通知设置
+  notifications:
+    enabled: true
+    
+    # 控制台通知
+    console:
+      enabled: true
+      show_details: true
+      
+    # 文件通知
+    file:
+      enabled: true
+      log_file: ".claude-code/logs/auto-commit.log"
+      
+    # 系统通知 (macOS)
+    system:
+      enabled: false
+      command: "osascript -e 'display notification \"${message}\" with title \"Claude Code Auto Commit\"'"
+
+  # 工作流集成
+  workflow:
+    # 与 Claude Code 集成
+    claude_code_integration:
+      auto_sync_config: true
+      trigger_validation: true
+      
+    # 与 Git hooks 集成
+    git_hooks_integration:
+      update_hooks: true
+      validate_before_commit: true
+      
+    # CI/CD 集成标记
+    ci_integration:
+      add_ci_skip: false  # 是否添加 [ci skip] 标记
+      trigger_build: true
