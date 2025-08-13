@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>外卖系统微服务架构图</title>
+  <style>
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0 0 10px 0;
+      font-size: 2.5em;
+      font-weight: 300;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 1.1em;
+    }
+
+    .tab-container {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab:hover {
+      background: #e9ecef;
+    }
+
+    .tab.active {
+      background: white;
+      border-bottom-color: #3498db;
+      color: #3498db;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .service-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 25px;
+      color: white;
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      transform: translateY(0);
+      transition: all 0.3s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .service-card h3 {
+      margin: 0 0 15px 0;
+      font-size: 1.4em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .service-card .icon {
+      width: 30px;
+      height: 30px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .service-card ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .service-card li {
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .flow-diagram {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .flow-step {
+      display: inline-block;
+      background: white;
+      border: 2px solid #3498db;
+      border-radius: 10px;
+      padding: 15px 25px;
+      margin: 10px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .flow-step::after {
+      content: '→';
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #3498db;
+      font-weight: bold;
+    }
+
+    .flow-step:last-child::after {
+      display: none;
+    }
+
+    .flow-step.highlight {
+      background: #3498db;
+      color: white;
+    }
+
+    .architecture-diagram {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .layer {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .layer h4 {
+      margin: 0 0 15px 0;
+      color: #2c3e50;
+      font-size: 1.2em;
+    }
+
+    .service-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .service-box {
+      background: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    .service-box:hover {
+      background: #2980b9;
+      transform: scale(1.05);
+    }
+
+    .dependency-map {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .dependency-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #e9ecef;
+      transition: background 0.3s ease;
+    }
+
+    .dependency-item:hover {
+      background: #f8f9fa;
+    }
+
+    .dependency-item:last-child {
+      border-bottom: none;
+    }
+
+    .dependency-source {
+      background: #e74c3c;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 500;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .dependency-arrow {
+      margin: 0 20px;
+      font-size: 20px;
+      color: #3498db;
+    }
+
+    .dependency-target {
+      background: #27ae60;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: 500;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .dependency-desc {
+      margin-left: 20px;
+      color: #7f8c8d;
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .dependency-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .dependency-arrow {
+        transform: rotate(90deg);
+      }
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);
+    }
+
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      opacity: 0.9;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🚀 外卖系统微服务架构</h1>
+    <p>县城级外卖平台 - 8个核心微服务设计方案</p>
+  </div>
+
+  <div class="tab-container">
+    <div class="tab active" onclick="showTab('services')">服务职责</div>
+    <div class="tab" onclick="showTab('architecture')">架构总览</div>
+    <div class="tab" onclick="showTab('dependencies')">服务依赖</div>
+    <div class="tab" onclick="showTab('flow')">业务流程</div>
+  </div>
+
+  <div class="content">
+    <div id="services" class="tab-content active">
+      <h2>🔧 核心微服务详细职责</h2>
+      <div class="service-grid">
+        <div class="service-card">
+          <h3><span class="icon">👤</span>用户服务</h3>
+          <ul>
+            <li>C端用户管理</li>
+            <li>骑手用户管理</li>
+            <li>商家用户管理</li>
+            <li>统一认证授权</li>
+            <li>用户画像维护</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">🏪</span>商家服务</h3>
+          <ul>
+            <li>店铺信息管理</li>
+            <li>资质证照管理</li>
+            <li>营业配置管理</li>
+            <li>商家分类管理</li>
+            <li>评分统计管理</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">📦</span>商品服务</h3>
+          <ul>
+            <li>商品信息管理</li>
+            <li>商品分类管理</li>
+            <li>库存管理</li>
+            <li>价格管理</li>
+            <li>上下架管理</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">📋</span>订单服务</h3>
+          <ul>
+            <li>订单创建管理</li>
+            <li>订单状态流转</li>
+            <li>三种模式支持</li>
+            <li>订单查询统计</li>
+            <li>取消退款处理</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">🚚</span>配送服务</h3>
+          <ul>
+            <li>配送任务管理</li>
+            <li>骑手位置跟踪</li>
+            <li>配送费计算</li>
+            <li>路径规划</li>
+            <li>时效管理</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">💳</span>支付服务</h3>
+          <ul>
+            <li>多渠道支付</li>
+            <li>支付订单管理</li>
+            <li>回调处理</li>
+            <li>退款处理</li>
+            <li>资金对账</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">🎯</span>营销服务</h3>
+          <ul>
+            <li>优惠券管理</li>
+            <li>促销活动管理</li>
+            <li>会员积分管理</li>
+            <li>营销规则引擎</li>
+            <li>优惠计算</li>
+          </ul>
+        </div>
+
+        <div class="service-card">
+          <h3><span class="icon">📊</span>数据统计服务</h3>
+          <ul>
+            <li>业务数据分析</li>
+            <li>报表生成</li>
+            <li>实时监控</li>
+            <li>数据导出</li>
+            <li>趋势分析</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">8</div>
+          <div class="stat-label">核心服务</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">业务模式</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">12</div>
+          <div class="stat-label">主要接口</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">服务覆盖</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="architecture" class="tab-content">
+      <h2>🏗️ 系统架构总览</h2>
+      <div class="architecture-diagram">
+        <div class="layer">
+          <h4>🌐 接入层</h4>
+          <div class="service-boxes">
+            <div class="service-box">API网关</div>
+            <div class="service-box">负载均衡</div>
+            <div class="service-box">限流熔断</div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <h4>🔧 业务服务层</h4>
+          <div class="service-boxes">
+            <div class="service-box">用户服务</div>
+            <div class="service-box">商家服务</div>
+            <div class="service-box">商品服务</div>
+            <div class="service-box">订单服务</div>
+            <div class="service-box">配送服务</div>
+            <div class="service-box">支付服务</div>
+            <div class="service-box">营销服务</div>
+            <div class="service-box">数据统计服务</div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <h4>🔗 中间件层</h4>
+          <div class="service-boxes">
+            <div class="service-box">注册中心</div>
+            <div class="service-box">配置中心</div>
+            <div class="service-box">消息队列</div>
+            <div class="service-box">缓存</div>
+          </div>
+        </div>
+
+        <div class="layer">
+          <h4>💾 数据存储层</h4>
+          <div class="service-boxes">
+            <div class="service-box">MySQL</div>
+            <div class="service-box">Redis</div>
+            <div class="service-box">ElasticSearch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dependencies" class="tab-content">
+      <h2>🔄 服务依赖关系图</h2>
+      <div class="dependency-map">
+        <div class="dependency-item">
+          <div class="dependency-source">订单服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">用户服务</div>
+          <div class="dependency-desc">用户信息验证、权限校验</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">订单服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">商品服务</div>
+          <div class="dependency-desc">商品信息查询、库存扣减</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">订单服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">营销服务</div>
+          <div class="dependency-desc">优惠券验证、优惠金额计算</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">订单服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">支付服务</div>
+          <div class="dependency-desc">支付订单创建</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">配送服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">订单服务</div>
+          <div class="dependency-desc">配送状态同步</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">支付服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">订单服务</div>
+          <div class="dependency-desc">支付结果通知</div>
+        </div>
+
+        <div class="dependency-item">
+          <div class="dependency-source">数据统计服务</div>
+          <div class="dependency-arrow">→</div>
+          <div class="dependency-target">各业务服务</div>
+          <div class="dependency-desc">业务数据采集、统计分析</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="flow" class="tab-content">
+      <h2>📋 主要业务流程</h2>
+
+      <h3>🛒 下单支付流程</h3>
+      <div class="flow-diagram">
+        <div class="flow-step highlight">用户下单</div>
+        <div class="flow-step">商品库存校验</div>
+        <div class="flow-step">优惠计算</div>
+        <div class="flow-step">订单创建</div>
+        <div class="flow-step">发起支付</div>
+        <div class="flow-step">支付完成</div>
+        <div class="flow-step">商家接单</div>
+      </div>
+
+      <h3>🚚 配送流程</h3>
+      <div class="flow-diagram">
+        <div class="flow-step highlight">商家接单</div>
+        <div class="flow-step">创建配送任务</div>
+        <div class="flow-step">骑手接单</div>
+        <div class="flow-step">骑手取餐</div>
+        <div class="flow-step">配送中</div>
+        <div class="flow-step">订单完成</div>
+      </div>
+
+      <h3>💰 退款流程</h3>
+      <div class="flow-diagram">
+        <div class="flow-step highlight">用户申请退款</div>
+        <div class="flow-step">商家确认</div>
+        <div class="flow-step">退款审核</div>
+        <div class="flow-step">退款处理</div>
+        <div class="flow-step">退款完成</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tab切换功能
+  function showTab(tabId) {
+    // 移除所有tab的active类
+    const allTabs = document.querySelectorAll('.tab');
+    allTabs.forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    // 移除所有tab-content的active类
+    const allTabContents = document.querySelectorAll('.tab-content');
+    allTabContents.forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    // 给当前点击的tab添加active类
+    event.target.classList.add('active');
+    
+    // 显示对应的tab内容
+    const targetContent = document.getElementById(tabId);
+    if (targetContent) {
+      targetContent.classList.add('active');
+    }
+  }
+
+  // 页面加载完成后的初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    // 确保默认第一个tab是激活状态
+    const firstTab = document.querySelector('.tab');
+    const firstContent = document.querySelector('.tab-content');
+    
+    if (firstTab && !firstTab.classList.contains('active')) {
+      firstTab.classList.add('active');
+    }
+    
+    if (firstContent && !firstContent.classList.contains('active')) {
+      firstContent.classList.add('active');
+    }
+  });
+</script>
+
+</body>
+</html>
