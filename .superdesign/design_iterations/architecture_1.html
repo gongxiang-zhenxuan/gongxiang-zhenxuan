@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贡享臻选 - 微服务系统架构图</title>
+    <link rel="stylesheet" href="architecture_theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <div class="architecture-container">
+        <!-- 浮动粒子效果 -->
+        <div class="floating-particles" id="particles"></div>
+        
+        <!-- 标题 -->
+        <div class="architecture-title">
+            <h1>贡享臻选微服务架构</h1>
+            <div class="subtitle">高性能 · 高可用 · 可扩展的县城本地生活服务平台</div>
+        </div>
+
+        <!-- 客户端层 -->
+        <div class="layer">
+            <h2 class="layer-title">客户端接入层</h2>
+            <div class="services-grid client-grid">
+                <div class="service-card client-card">
+                    <i data-lucide="smartphone" class="service-icon"></i>
+                    <div class="service-title">用户端</div>
+                    <div class="service-subtitle">User App</div>
+                    <div class="service-description">
+                        外卖点餐<br>
+                        团购优惠<br>
+                        订单管理
+                    </div>
+                </div>
+                <div class="service-card client-card">
+                    <i data-lucide="store" class="service-icon"></i>
+                    <div class="service-title">商户端</div>
+                    <div class="service-subtitle">Merchant App</div>
+                    <div class="service-description">
+                        店铺管理<br>
+                        订单处理<br>
+                        B2B采购
+                    </div>
+                </div>
+                <div class="service-card client-card">
+                    <i data-lucide="bike" class="service-icon"></i>
+                    <div class="service-title">骑手端</div>
+                    <div class="service-subtitle">Rider App</div>
+                    <div class="service-description">
+                        抢单配送<br>
+                        路线导航<br>
+                        收入统计
+                    </div>
+                </div>
+                <div class="service-card client-card">
+                    <i data-lucide="monitor" class="service-icon"></i>
+                    <div class="service-title">管理后台</div>
+                    <div class="service-subtitle">Admin Panel</div>
+                    <div class="service-description">
+                        运营管理<br>
+                        数据统计<br>
+                        系统配置
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API网关层 -->
+        <div class="layer">
+            <h2 class="layer-title">API网关层</h2>
+            <div class="services-grid gateway-grid">
+                <div class="service-card gateway-card">
+                    <i data-lucide="zap" class="service-icon"></i>
+                    <div class="service-title">API Gateway</div>
+                    <div class="service-subtitle">gxz-gateway</div>
+                    <div class="service-description">
+                        统一入口 · 路由转发 · 认证鉴权<br>
+                        流量控制 · 监控日志 · 跨域处理<br>
+                        <strong>端口: 8080</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 核心业务层 -->
+        <div class="layer">
+            <h2 class="layer-title">核心业务服务层</h2>
+            <div class="services-grid core-grid">
+                <div class="service-card core-card">
+                    <i data-lucide="users" class="service-icon"></i>
+                    <div class="service-title">用户服务</div>
+                    <div class="service-subtitle">gxz-user</div>
+                    <div class="service-description">
+                        C端用户管理<br>
+                        骑手用户管理<br>
+                        地址簿 · 积分体系
+                    </div>
+                </div>
+                <div class="service-card core-card">
+                    <i data-lucide="building" class="service-icon"></i>
+                    <div class="service-title">商户服务</div>
+                    <div class="service-subtitle">gxz-merchant</div>
+                    <div class="service-description">
+                        商户入驻审核<br>
+                        店铺信息管理<br>
+                        营业状态控制
+                    </div>
+                </div>
+                <div class="service-card core-card">
+                    <i data-lucide="package" class="service-icon"></i>
+                    <div class="service-title">商品服务</div>
+                    <div class="service-subtitle">gxz-goods</div>
+                    <div class="service-description">
+                        外卖菜品管理<br>
+                        团购商品管理<br>
+                        B2B供应商品
+                    </div>
+                </div>
+                <div class="service-card core-card" style="border: 3px solid var(--text-accent); box-shadow: var(--shadow-glow);">
+                    <i data-lucide="shopping-cart" class="service-icon"></i>
+                    <div class="service-title">订单支付服务</div>
+                    <div class="service-subtitle">gxz-order-payment</div>
+                    <div class="service-description">
+                        <strong>核心服务</strong><br>
+                        外卖·团购·B2B订单<br>
+                        支付处理·状态流转
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支撑服务层 -->
+        <div class="layer">
+            <h2 class="layer-title">业务支撑服务层</h2>
+            <div class="services-grid support-grid">
+                <div class="service-card support-card">
+                    <i data-lucide="truck" class="service-icon"></i>
+                    <div class="service-title">配送服务</div>
+                    <div class="service-subtitle">gxz-delivery</div>
+                    <div class="service-description">
+                        智能派单<br>
+                        骑手抢单<br>
+                        配送跟踪
+                    </div>
+                </div>
+                <div class="service-card support-card">
+                    <i data-lucide="banknote" class="service-icon"></i>
+                    <div class="service-title">财务服务</div>
+                    <div class="service-subtitle">gxz-finance</div>
+                    <div class="service-description">
+                        营销推广<br>
+                        优惠券管理<br>
+                        收入结算
+                    </div>
+                </div>
+                <div class="service-card support-card">
+                    <i data-lucide="settings" class="service-icon"></i>
+                    <div class="service-title">平台服务</div>
+                    <div class="service-subtitle">gxz-platform</div>
+                    <div class="service-description">
+                        消息通知<br>
+                        系统管理<br>
+                        内容管理
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据存储层 -->
+        <div class="layer">
+            <h2 class="layer-title">数据存储层</h2>
+            <div class="services-grid data-grid">
+                <div class="service-card data-card">
+                    <i data-lucide="database" class="service-icon"></i>
+                    <div class="service-title">MySQL</div>
+                    <div class="service-subtitle">关系型数据库</div>
+                    <div class="service-description">
+                        主从架构<br>
+                        业务数据存储<br>
+                        事务一致性
+                    </div>
+                </div>
+                <div class="service-card data-card">
+                    <i data-lucide="cpu" class="service-icon"></i>
+                    <div class="service-title">Redis</div>
+                    <div class="service-subtitle">缓存数据库</div>
+                    <div class="service-description">
+                        哨兵集群<br>
+                        缓存加速<br>
+                        分布式锁
+                    </div>
+                </div>
+                <div class="service-card data-card">
+                    <i data-lucide="hard-drive" class="service-icon"></i>
+                    <div class="service-title">文件存储</div>
+                    <div class="service-subtitle">对象存储</div>
+                    <div class="service-description">
+                        图片存储<br>
+                        文档管理<br>
+                        CDN加速
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 基础设施层 -->
+        <div class="layer">
+            <h2 class="layer-title">基础设施层</h2>
+            <div class="services-grid infra-grid">
+                <div class="service-card infra-card">
+                    <i data-lucide="compass" class="service-icon"></i>
+                    <div class="service-title">Nacos</div>
+                    <div class="service-subtitle">注册配置中心</div>
+                    <div class="service-description">
+                        服务注册发现<br>
+                        配置管理<br>
+                        集群部署
+                    </div>
+                </div>
+                <div class="service-card infra-card">
+                    <i data-lucide="activity" class="service-icon"></i>
+                    <div class="service-title">监控告警</div>
+                    <div class="service-subtitle">系统监控</div>
+                    <div class="service-description">
+                        性能监控<br>
+                        异常告警<br>
+                        链路追踪
+                    </div>
+                </div>
+                <div class="service-card infra-card">
+                    <i data-lucide="file-text" class="service-icon"></i>
+                    <div class="service-title">日志系统</div>
+                    <div class="service-subtitle">日志收集</div>
+                    <div class="service-description">
+                        日志收集<br>
+                        实时分析<br>
+                        审计追溯
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术栈 -->
+        <div class="tech-stack">
+            <h2 class="layer-title">技术栈</h2>
+            <div class="tech-items">
+                <div class="tech-item">Spring Boot 2.7</div>
+                <div class="tech-item">Spring Cloud Gateway</div>
+                <div class="tech-item">Spring Cloud Alibaba</div>
+                <div class="tech-item">MySQL 8.0</div>
+                <div class="tech-item">Redis 6.0</div>
+                <div class="tech-item">Nacos</div>
+                <div class="tech-item">Docker</div>
+                <div class="tech-item">Nginx</div>
+                <div class="tech-item">MyBatis Plus</div>
+            </div>
+        </div>
+
+        <!-- SVG连接线 -->
+        <svg class="connection-lines" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgba(100, 255, 218, 0.6);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgba(100, 255, 218, 0.2);stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- 客户端到网关的连接线 -->
+            <line class="connection-line" x1="50%" y1="25%" x2="50%" y2="35%" stroke="url(#connectionGradient)" />
+            
+            <!-- 网关到核心服务的连接线 -->
+            <line class="connection-line" x1="50%" y1="45%" x2="50%" y2="55%" stroke="url(#connectionGradient)" />
+            
+            <!-- 核心服务到支撑服务的连接线 -->
+            <line class="connection-line" x1="50%" y1="65%" x2="50%" y2="75%" stroke="url(#connectionGradient)" />
+        </svg>
+    </div>
+
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+
+        // 创建浮动粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 20) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 添加卡片悬停效果
+        function addCardEffects() {
+            const cards = document.querySelectorAll('.service-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02) rotateZ(1deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1) rotateZ(0)';
+                });
+            });
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            addCardEffects();
+            
+            // 添加滚动视差效果
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.floating-particles');
+                const speed = scrolled * 0.5;
+                parallax.style.transform = 'translateY(' + speed + 'px)';
+            });
+        });
+
+        // 添加键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'f' || e.key === 'F') {
+                document.documentElement.requestFullscreen();
+            }
+            if (e.key === 'Escape') {
+                document.exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

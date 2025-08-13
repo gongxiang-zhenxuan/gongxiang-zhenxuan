@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贡享臻选 - 完整微服务架构图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0e17;
+            color: #ffffff;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: auto;
+            min-height: 100vh;
+        }
+
+        .architecture-container {
+            width: 1800px;
+            height: 1600px;
+            margin: 30px auto;
+            position: relative;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(64, 224, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(255, 64, 129, 0.05) 0%, transparent 40%),
+                linear-gradient(135deg, #0a0e17 0%, #1a1f2e 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        /* 标题 */
+        .title {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .title h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #40e0ff, #64ffda, #ff4081);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .title .subtitle {
+            font-size: 0.9rem;
+            color: #8892b0;
+            font-weight: 300;
+        }
+
+        /* 层级容器 */
+        .layer {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .layer-title {
+            position: absolute;
+            left: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64ffda;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 1px;
+        }
+
+        /* 服务节点基础样式 */
+        .service-node {
+            background: linear-gradient(145deg, #1e2437 0%, #252a3f 100%);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .service-node:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .service-node .icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .service-node .name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .service-node .code {
+            font-size: 11px;
+            color: #64ffda;
+            font-family: 'SF Mono', monospace;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .service-node .port {
+            font-size: 10px;
+            color: #a0a9c0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .service-node .details {
+            font-size: 9px;
+            color: #b4bcd0;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        /* 不同类型节点样式 */
+        .client-node {
+            width: 130px;
+            height: 105px;
+            border-color: rgba(79, 172, 254, 0.4);
+        }
+        .client-node .icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .client-node:hover { border-color: #4facfe; box-shadow: 0 12px 35px rgba(79, 172, 254, 0.2); }
+
+        .gateway-node {
+            width: 160px;
+            height: 110px;
+            border-color: rgba(250, 112, 154, 0.4);
+        }
+        .gateway-node .icon { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .gateway-node:hover { border-color: #fa709a; box-shadow: 0 12px 35px rgba(250, 112, 154, 0.2); }
+
+        .core-node {
+            width: 140px;
+            height: 110px;
+            border-color: rgba(67, 233, 123, 0.4);
+        }
+        .core-node .icon { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .core-node:hover { border-color: #43e97b; box-shadow: 0 12px 35px rgba(67, 233, 123, 0.2); }
+
+        .order-node {
+            width: 150px;
+            height: 120px;
+            border: 3px solid #ff6b6b;
+            position: relative;
+        }
+        .order-node .icon { background: linear-gradient(135deg, #ff6b6b, #ffa726); }
+        .order-node::before {
+            content: 'CORE';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 8px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .support-node {
+            width: 130px;
+            height: 105px;
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+        .support-node .icon { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .support-node:hover { border-color: #667eea; box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2); }
+
+        .data-node {
+            width: 125px;
+            height: 100px;
+            border-color: rgba(142, 45, 226, 0.4);
+        }
+        .data-node .icon { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+        .data-node:hover { border-color: #8e2de2; box-shadow: 0 12px 35px rgba(142, 45, 226, 0.2); }
+
+        .infra-node {
+            width: 120px;
+            height: 95px;
+            border-color: rgba(255, 183, 77, 0.4);
+        }
+        .infra-node .icon { background: linear-gradient(135deg, #ffb74d, #ff8a65); }
+        .infra-node:hover { border-color: #ffb74d; box-shadow: 0 12px 35px rgba(255, 183, 77, 0.2); }
+
+        /* 调用关系箭头 */
+        .call-arrow {
+            position: absolute;
+            z-index: 50;
+        }
+
+        .call-arrow::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            z-index: 51;
+        }
+
+        .call-arrow::after {
+            position: absolute;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 4px;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 52;
+        }
+
+        /* 同步调用 - 绿色实线箭头 */
+        .sync-call {
+            background: linear-gradient(90deg, #43e97b, #38f9d7);
+            height: 3px;
+            border-radius: 2px;
+            animation: syncFlow 2s infinite ease-in-out;
+        }
+
+        .sync-call::before {
+            right: -8px;
+            top: -3px;
+            border-left: 8px solid #43e97b;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+        }
+
+        .sync-call::after {
+            content: attr(data-api);
+            background: rgba(67, 233, 123, 0.15);
+            color: #43e97b;
+            border: 1px solid rgba(67, 233, 123, 0.4);
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 异步调用 - 橙色虚线箭头 */
+        .async-call {
+            background: repeating-linear-gradient(
+                90deg,
+                #ff8c42,
+                #ff8c42 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            height: 3px;
+            border-radius: 2px;
+            animation: asyncFlow 3s infinite ease-in-out;
+        }
+
+        .async-call::before {
+            right: -8px;
+            top: -3px;
+            border-left: 8px solid #ff8c42;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+        }
+
+        .async-call::after {
+            content: attr(data-event);
+            background: rgba(255, 140, 66, 0.15);
+            color: #ff8c42;
+            border: 1px solid rgba(255, 140, 66, 0.4);
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 垂直箭头 */
+        .vertical {
+            transform-origin: left;
+            transform: rotate(90deg);
+        }
+
+        .vertical::after {
+            transform: translateX(-50%) rotate(-90deg);
+        }
+
+        /* 基础架构连接线 */
+        .connection {
+            position: absolute;
+            background: linear-gradient(90deg, transparent 20%, #64ffda 50%, transparent 80%);
+            z-index: 1;
+            opacity: 0.4;
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        .connection.vertical {
+            width: 2px;
+            background: linear-gradient(180deg, transparent 20%, #64ffda 50%, transparent 80%);
+        }
+
+        .connection.horizontal {
+            height: 2px;
+        }
+
+        @keyframes syncFlow {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1.0; }
+        }
+
+        @keyframes asyncFlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* 信息面板 */
+        .info-panel {
+            position: absolute;
+            background: rgba(20, 25, 40, 0.95);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(15px);
+            width: 260px;
+        }
+
+        .info-panel h3 {
+            color: #64ffda;
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            font-weight: 700;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .info-item .label {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .info-item .value {
+            color: #a0a9c0;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: rgba(100, 255, 218, 0.12);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 10px;
+            padding: 3px 7px;
+            margin: 2px 1px;
+            font-size: 8px;
+            color: #64ffda;
+            font-weight: 500;
+        }
+
+        /* 调用关系图例 */
+        .call-legend {
+            position: absolute;
+            top: 100px;
+            right: 50px;
+            background: rgba(20, 25, 40, 0.95);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 12px;
+            padding: 15px;
+            backdrop-filter: blur(15px);
+            width: 220px;
+        }
+
+        .call-legend h3 {
+            color: #64ffda;
+            font-size: 13px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 10px;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 3px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .legend-line.sync {
+            background: linear-gradient(90deg, #43e97b, #38f9d7);
+        }
+
+        .legend-line.async {
+            background: repeating-linear-gradient(
+                90deg,
+                #ff8c42,
+                #ff8c42 6px,
+                transparent 6px,
+                transparent 12px
+            );
+        }
+
+        .legend-line.infra {
+            background: linear-gradient(90deg, transparent 20%, #64ffda 50%, transparent 80%);
+        }
+
+        /* 性能指标 */
+        .metrics {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .metric {
+            background: rgba(20, 25, 40, 0.95);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            min-width: 70px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #64ffda;
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 8px;
+            color: #8892b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="architecture-container">
+        <!-- 标题 -->
+        <div class="title">
+            <h1>贡享臻选完整微服务架构图</h1>
+            <div class="subtitle">Complete Microservices Architecture with Service Dependencies</div>
+        </div>
+
+        <!-- 客户端层 -->
+        <div class="layer" style="top: 100px;">
+            <div class="layer-title">客户端层</div>
+            <div class="service-node client-node">
+                <div class="icon">📱</div>
+                <div class="name">用户端</div>
+                <div class="code">User App</div>
+                <div class="details">外卖点餐<br>团购优惠<br>订单管理</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">🏪</div>
+                <div class="name">商户端</div>
+                <div class="code">Merchant App</div>
+                <div class="details">店铺管理<br>订单处理<br>B2B采购</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">🚴</div>
+                <div class="name">骑手端</div>
+                <div class="code">Rider App</div>
+                <div class="details">抢单配送<br>路线导航<br>收入统计</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">💻</div>
+                <div class="name">管理后台</div>
+                <div class="code">Admin Web</div>
+                <div class="details">运营管理<br>数据分析<br>系统配置</div>
+            </div>
+        </div>
+
+        <!-- API网关层 -->
+        <div class="layer" style="top: 240px;">
+            <div class="layer-title">网关层</div>
+            <div class="service-node gateway-node">
+                <div class="icon">⚡</div>
+                <div class="name">API Gateway</div>
+                <div class="code">gxz-gateway</div>
+                <div class="port">Port: 8080</div>
+                <div class="details">统一入口 · 路由转发<br>认证鉴权 · 流量控制<br>Spring Cloud Gateway</div>
+            </div>
+        </div>
+
+        <!-- 核心服务层 -->
+        <div class="layer" style="top: 380px;">
+            <div class="layer-title">核心服务层</div>
+            <div class="service-node core-node">
+                <div class="icon">👥</div>
+                <div class="name">用户服务</div>
+                <div class="code">gxz-user</div>
+                <div class="port">Port: 8081</div>
+                <div class="details">用户管理<br>地址管理<br>购物车管理</div>
+            </div>
+            <div class="service-node core-node">
+                <div class="icon">🏪</div>
+                <div class="name">商户商品服务</div>
+                <div class="code">gxz-merchant</div>
+                <div class="port">Port: 8082</div>
+                <div class="details">商户入驻<br>商品管理<br>库存管理</div>
+            </div>
+            <div class="service-node core-node order-node">
+                <div class="icon">🛒</div>
+                <div class="name">订单交易服务</div>
+                <div class="code">gxz-order</div>
+                <div class="port">Port: 8083</div>
+                <div class="details">统一订单管理<br>支付处理<br>价格计算</div>
+            </div>
+            <div class="service-node core-node">
+                <div class="icon">🚚</div>
+                <div class="name">配送履约服务</div>
+                <div class="code">gxz-delivery</div>
+                <div class="port">Port: 8084</div>
+                <div class="details">骑手管理<br>配送调度<br>履约跟踪</div>
+            </div>
+        </div>
+
+        <!-- 支撑服务层 -->
+        <div class="layer" style="top: 530px;">
+            <div class="layer-title">支撑服务层</div>
+            <div class="service-node support-node">
+                <div class="icon">🎯</div>
+                <div class="name">营销促销服务</div>
+                <div class="code">gxz-promotion</div>
+                <div class="port">Port: 8085</div>
+                <div class="details">优惠券系统<br>促销活动<br>价格计算引擎</div>
+            </div>
+            <div class="service-node support-node">
+                <div class="icon">💳</div>
+                <div class="name">钱包财务服务</div>
+                <div class="code">gxz-wallet</div>
+                <div class="port">Port: 8086</div>
+                <div class="details">账户管理<br>资金流转<br>结算管理</div>
+            </div>
+            <div class="service-node support-node">
+                <div class="icon">🛠️</div>
+                <div class="name">运营管理服务</div>
+                <div class="code">gxz-admin</div>
+                <div class="port">Port: 8087</div>
+                <div class="details">权限管理<br>内容管理<br>数据统计</div>
+            </div>
+        </div>
+
+        <!-- 数据存储层 -->
+        <div class="layer" style="top: 670px;">
+            <div class="layer-title">数据存储层</div>
+            <div class="service-node data-node">
+                <div class="icon">🗃️</div>
+                <div class="name">MySQL</div>
+                <div class="code">Primary DB</div>
+                <div class="port">Port: 3306</div>
+                <div class="details">主从架构<br>业务数据<br>事务一致性</div>
+            </div>
+            <div class="service-node data-node">
+                <div class="icon">⚡</div>
+                <div class="name">Redis</div>
+                <div class="code">Cache</div>
+                <div class="port">Port: 6379</div>
+                <div class="details">哨兵集群<br>缓存加速<br>分布式锁</div>
+            </div>
+            <div class="service-node data-node">
+                <div class="icon">📁</div>
+                <div class="name">文件存储</div>
+                <div class="code">OSS</div>
+                <div class="port">HTTPS</div>
+                <div class="details">图片文档<br>CDN加速<br>对象存储</div>
+            </div>
+        </div>
+
+        <!-- 基础设施层 -->
+        <div class="layer" style="top: 800px;">
+            <div class="layer-title">基础设施层</div>
+            <div class="service-node infra-node">
+                <div class="icon">🧭</div>
+                <div class="name">Nacos</div>
+                <div class="code">Registry</div>
+                <div class="port">Port: 8848</div>
+                <div class="details">服务注册<br>配置管理<br>集群部署</div>
+            </div>
+            <div class="service-node infra-node">
+                <div class="icon">📊</div>
+                <div class="name">监控告警</div>
+                <div class="code">Monitor</div>
+                <div class="details">性能监控<br>异常告警<br>链路追踪</div>
+            </div>
+            <div class="service-node infra-node">
+                <div class="icon">📋</div>
+                <div class="name">日志系统</div>
+                <div class="code">Logging</div>
+                <div class="details">日志收集<br>实时分析<br>审计追溯</div>
+            </div>
+        </div>
+
+        <!-- 基础架构连接线 -->
+        <!-- 客户端到网关 -->
+        <div class="connection vertical" style="top: 205px; left: 899px; height: 35px;"></div>
+        
+        <!-- 网关到核心服务 -->
+        <div class="connection vertical" style="top: 350px; left: 899px; height: 30px;"></div>
+        
+        <!-- 核心服务到支撑服务 -->
+        <div class="connection vertical" style="top: 490px; left: 899px; height: 40px;"></div>
+        
+        <!-- 支撑服务到数据存储 -->
+        <div class="connection vertical" style="top: 635px; left: 899px; height: 35px;"></div>
+        
+        <!-- 数据存储到基础设施 -->
+        <div class="connection vertical" style="top: 770px; left: 899px; height: 30px;"></div>
+
+        <!-- 微服务调用关系 -->
+        <!-- 同步调用 -->
+        <!-- 订单服务 → 用户服务 (获取地址) -->
+        <div class="call-arrow sync-call" style="top: 439px; left: 680px; width: 110px;" data-api="GET /addresses"></div>
+
+        <!-- 订单服务 → 商户服务 (库存校验) -->
+        <div class="call-arrow sync-call" style="top: 419px; left: 755px; width: 110px;" data-api="POST /check-stock"></div>
+
+        <!-- 订单服务 → 营销服务 (价格计算) -->
+        <div class="call-arrow sync-call vertical" style="top: 490px; left: 871px; width: 60px;" data-api="POST /calc-price"></div>
+
+        <!-- 管理服务 → 各服务 (统计查询) -->
+        <div class="call-arrow sync-call" style="top: 571px; left: 770px; width: 180px;" data-api="GET /statistics"></div>
+
+        <!-- 异步事件调用 -->
+        <!-- 订单支付成功 → 配送服务 (新配送任务) -->
+        <div class="call-arrow async-call" style="top: 459px; left: 980px; width: 120px;" data-event="OrderPaidEvent"></div>
+
+        <!-- 订单支付成功 → 钱包服务 (资金变动) -->
+        <div class="call-arrow async-call vertical" style="top: 490px; left: 850px; width: 60px;" data-event="PaymentEvent"></div>
+
+        <!-- 配送完成 → 订单服务 (更新状态) -->
+        <div class="call-arrow async-call" style="top: 399px; left: 980px; width: 120px;" data-event="DeliveryDoneEvent"></div>
+
+        <!-- 配送完成 → 钱包服务 (骑手结算) -->
+        <div class="call-arrow async-call vertical" style="top: 490px; left: 1171px; width: 60px;" data-event="SettlementEvent"></div>
+
+        <!-- 技术栈信息面板 -->
+        <div class="info-panel" style="top: 100px; left: 50px;">
+            <h3>核心技术栈</h3>
+            <div class="info-item">
+                <div class="label">微服务框架</div>
+                <div class="value">
+                    <span class="tech-tag">Spring Boot 2.7</span>
+                    <span class="tech-tag">Spring Cloud</span>
+                    <span class="tech-tag">Spring Cloud Alibaba</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="label">数据存储</div>
+                <div class="value">
+                    <span class="tech-tag">MySQL 8.0</span>
+                    <span class="tech-tag">Redis 6.0</span>
+                    <span class="tech-tag">MyBatis Plus</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="label">基础设施</div>
+                <div class="value">
+                    <span class="tech-tag">Nacos</span>
+                    <span class="tech-tag">Docker</span>
+                    <span class="tech-tag">Nginx</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 调用关系图例 -->
+        <div class="call-legend">
+            <h3>服务调用关系</h3>
+            <div class="legend-item">
+                <div class="legend-line sync"></div>
+                <span>同步API调用</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line async"></div>
+                <span>异步事件调用</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line infra"></div>
+                <span>基础架构连接</span>
+            </div>
+            <div style="margin-top: 10px; font-size: 9px; color: #8892b0; line-height: 1.4;">
+                <strong style="color: #64ffda;">设计原则：</strong><br>
+                • 减少同步调用链<br>
+                • 通过MQ事件解耦<br>
+                • 订单服务协调核心流程<br>
+                • 异步化比例75%
+            </div>
+        </div>
+
+        <!-- 性能指标 -->
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">8</div>
+                <div class="metric-label">核心服务数</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">4</div>
+                <div class="metric-label">同步调用链</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">4</div>
+                <div class="metric-label">异步事件流</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">75%</div>
+                <div class="metric-label">异步化比例</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">99.9%</div>
+                <div class="metric-label">系统可用性</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加交互效果
+        document.querySelectorAll('.service-node').forEach(node => {
+            node.addEventListener('mouseenter', function() {
+                this.style.zIndex = '100';
+                
+                // 高亮相关的调用关系
+                const nodeName = this.querySelector('.code').textContent;
+                document.querySelectorAll('.call-arrow').forEach(arrow => {
+                    if (!arrow.dataset.api && !arrow.dataset.event) return;
+                    
+                    // 根据节点位置判断相关性
+                    const rect1 = this.getBoundingClientRect();
+                    const rect2 = arrow.getBoundingClientRect();
+                    const distance = Math.abs(rect1.left - rect2.left) + Math.abs(rect1.top - rect2.top);
+                    
+                    if (distance < 300) {
+                        arrow.style.opacity = '1';
+                        arrow.style.transform = 'scale(1.1)';
+                    } else {
+                        arrow.style.opacity = '0.3';
+                    }
+                });
+            });
+            
+            node.addEventListener('mouseleave', function() {
+                this.style.zIndex = '2';
+                
+                // 恢复所有调用关系
+                document.querySelectorAll('.call-arrow').forEach(arrow => {
+                    arrow.style.opacity = '';
+                    arrow.style.transform = '';
+                });
+            });
+        });
+
+        // 动画初始化
+        function initAnimations() {
+            const arrows = document.querySelectorAll('.call-arrow');
+            arrows.forEach((arrow, index) => {
+                arrow.style.animationDelay = (index * 0.3) + 's';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initAnimations);
+    </script>
+</body>
+</html>

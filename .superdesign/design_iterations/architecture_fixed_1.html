@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贡享臻选 - 系统架构图 v3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0e17;
+            color: #ffffff;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: auto;
+            min-height: 100vh;
+        }
+
+        .architecture-container {
+            width: 1600px;
+            height: 1200px;
+            margin: 30px auto;
+            position: relative;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(64, 224, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(255, 64, 129, 0.05) 0%, transparent 40%),
+                linear-gradient(135deg, #0a0e17 0%, #1a1f2e 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        /* 标题 */
+        .title {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .title h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #40e0ff, #64ffda, #ff4081);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .title .subtitle {
+            font-size: 0.8rem;
+            color: #8892b0;
+            font-weight: 300;
+        }
+
+        /* 层级容器 */
+        .layer {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .layer-title {
+            position: absolute;
+            left: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64ffda;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 1px;
+        }
+
+        /* 服务节点基础样式 */
+        .service-node {
+            background: linear-gradient(145deg, #1e2437 0%, #252a3f 100%);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .service-node:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .service-node .icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .service-node .name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .service-node .code {
+            font-size: 11px;
+            color: #64ffda;
+            font-family: 'SF Mono', monospace;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .service-node .port {
+            font-size: 10px;
+            color: #a0a9c0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .service-node .details {
+            font-size: 9px;
+            color: #b4bcd0;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        /* 不同类型节点样式 */
+        .client-node {
+            width: 130px;
+            height: 105px;
+            border-color: rgba(79, 172, 254, 0.4);
+        }
+        .client-node .icon { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .client-node:hover { border-color: #4facfe; box-shadow: 0 12px 35px rgba(79, 172, 254, 0.2); }
+
+        .gateway-node {
+            width: 160px;
+            height: 110px;
+            border-color: rgba(250, 112, 154, 0.4);
+        }
+        .gateway-node .icon { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .gateway-node:hover { border-color: #fa709a; box-shadow: 0 12px 35px rgba(250, 112, 154, 0.2); }
+
+        .core-node {
+            width: 140px;
+            height: 110px;
+            border-color: rgba(67, 233, 123, 0.4);
+        }
+        .core-node .icon { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .core-node:hover { border-color: #43e97b; box-shadow: 0 12px 35px rgba(67, 233, 123, 0.2); }
+
+        .order-node {
+            width: 150px;
+            height: 120px;
+            border: 3px solid #ff6b6b;
+            position: relative;
+        }
+        .order-node .icon { background: linear-gradient(135deg, #ff6b6b, #ffa726); }
+        .order-node::before {
+            content: 'CORE';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 8px;
+            font-weight: 800;
+            padding: 3px 7px;
+            border-radius: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .support-node {
+            width: 130px;
+            height: 105px;
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+        .support-node .icon { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .support-node:hover { border-color: #667eea; box-shadow: 0 12px 35px rgba(102, 126, 234, 0.2); }
+
+        .data-node {
+            width: 125px;
+            height: 100px;
+            border-color: rgba(142, 45, 226, 0.4);
+        }
+        .data-node .icon { background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+        .data-node:hover { border-color: #8e2de2; box-shadow: 0 12px 35px rgba(142, 45, 226, 0.2); }
+
+        .infra-node {
+            width: 120px;
+            height: 95px;
+            border-color: rgba(255, 183, 77, 0.4);
+        }
+        .infra-node .icon { background: linear-gradient(135deg, #ffb74d, #ff8a65); }
+        .infra-node:hover { border-color: #ffb74d; box-shadow: 0 12px 35px rgba(255, 183, 77, 0.2); }
+
+        /* 连接线 - 更清晰的业务流程 */
+        .connection {
+            position: absolute;
+            background: linear-gradient(90deg, transparent 20%, #64ffda 50%, transparent 80%);
+            z-index: 1;
+            opacity: 0.6;
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        .connection.vertical {
+            width: 3px;
+            background: linear-gradient(180deg, transparent 20%, #64ffda 50%, transparent 80%);
+        }
+
+        .connection.horizontal {
+            height: 3px;
+        }
+
+        .connection.data-flow {
+            background: linear-gradient(90deg, transparent 20%, #ff6b6b 50%, transparent 80%);
+            animation: dataFlow 3s infinite ease-in-out;
+            opacity: 0.8;
+        }
+
+        .connection.data-flow.vertical {
+            background: linear-gradient(180deg, transparent 20%, #ff6b6b 50%, transparent 80%);
+        }
+
+        .connection.business-flow {
+            background: linear-gradient(90deg, transparent 20%, #43e97b 50%, transparent 80%);
+            animation: businessFlow 2s infinite ease-in-out;
+            opacity: 0.9;
+            height: 4px;
+        }
+
+        .connection.business-flow.vertical {
+            width: 4px;
+            background: linear-gradient(180deg, transparent 20%, #43e97b 50%, transparent 80%);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes dataFlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+
+        @keyframes businessFlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1.0; }
+        }
+
+        /* 信息面板 */
+        .info-panel {
+            position: absolute;
+            background: rgba(20, 25, 40, 0.95);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(15px);
+            width: 260px;
+        }
+
+        .info-panel h3 {
+            color: #64ffda;
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.2);
+            font-weight: 700;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .info-item .label {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .info-item .value {
+            color: #a0a9c0;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: rgba(100, 255, 218, 0.12);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 10px;
+            padding: 3px 7px;
+            margin: 2px 1px;
+            font-size: 8px;
+            color: #64ffda;
+            font-weight: 500;
+        }
+
+        /* 业务流程标注 */
+        .flow-indicator {
+            position: absolute;
+            background: rgba(255, 107, 107, 0.12);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            border-radius: 14px;
+            padding: 5px 10px;
+            font-size: 9px;
+            color: #ff6b6b;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .flow-indicator.takeaway {
+            background: rgba(67, 233, 123, 0.15);
+            border: 1px solid rgba(67, 233, 123, 0.6);
+            color: #43e97b;
+        }
+
+        .flow-indicator.groupbuy {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid rgba(79, 172, 254, 0.6);
+            color: #4facfe;
+        }
+
+        .flow-indicator.delivery {
+            background: rgba(250, 112, 154, 0.15);
+            border: 1px solid rgba(250, 112, 154, 0.6);
+            color: #fa709a;
+        }
+
+        /* 性能指标 - 修复重叠问题 */
+        .metrics {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .metric {
+            background: rgba(20, 25, 40, 0.95);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            min-width: 70px;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #64ffda;
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 8px;
+            color: #8892b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="architecture-container">
+        <!-- 标题 -->
+        <div class="title">
+            <h1>贡享臻选微服务系统架构</h1>
+            <div class="subtitle">Production-Ready Architecture Design</div>
+        </div>
+
+        <!-- 客户端层 -->
+        <div class="layer" style="top: 100px;">
+            <div class="layer-title">客户端层</div>
+            <div class="service-node client-node">
+                <div class="icon">📱</div>
+                <div class="name">用户端</div>
+                <div class="code">User App</div>
+                <div class="details">外卖点餐<br>团购优惠<br>订单管理</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">🏪</div>
+                <div class="name">商户端</div>
+                <div class="code">Merchant App</div>
+                <div class="details">店铺管理<br>订单处理<br>B2B采购</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">🚴</div>
+                <div class="name">骑手端</div>
+                <div class="code">Rider App</div>
+                <div class="details">抢单配送<br>路线导航<br>收入统计</div>
+            </div>
+            <div class="service-node client-node">
+                <div class="icon">💻</div>
+                <div class="name">管理后台</div>
+                <div class="code">Admin Web</div>
+                <div class="details">运营管理<br>数据分析<br>系统配置</div>
+            </div>
+        </div>
+
+        <!-- API网关层 -->
+        <div class="layer" style="top: 240px;">
+            <div class="layer-title">网关层</div>
+            <div class="service-node gateway-node">
+                <div class="icon">⚡</div>
+                <div class="name">API Gateway</div>
+                <div class="code">gxz-gateway</div>
+                <div class="port">Port: 8080</div>
+                <div class="details">统一入口 · 路由转发<br>认证鉴权 · 流量控制<br>Spring Cloud Gateway</div>
+            </div>
+        </div>
+
+        <!-- 核心服务层 -->
+        <div class="layer" style="top: 380px;">
+            <div class="layer-title">核心服务层</div>
+            <div class="service-node core-node">
+                <div class="icon">👥</div>
+                <div class="name">用户服务</div>
+                <div class="code">gxz-user</div>
+                <div class="port">Port: 8081</div>
+                <div class="details">用户管理<br>地址管理<br>购物车管理</div>
+            </div>
+            <div class="service-node core-node">
+                <div class="icon">🏪</div>
+                <div class="name">商户商品服务</div>
+                <div class="code">gxz-merchant</div>
+                <div class="port">Port: 8082</div>
+                <div class="details">商户入驻<br>商品管理<br>库存管理</div>
+            </div>
+            <div class="service-node core-node order-node">
+                <div class="icon">🛒</div>
+                <div class="name">订单交易服务</div>
+                <div class="code">gxz-order</div>
+                <div class="port">Port: 8083</div>
+                <div class="details">统一订单管理<br>支付处理<br>价格计算</div>
+            </div>
+            <div class="service-node core-node">
+                <div class="icon">🚚</div>
+                <div class="name">配送履约服务</div>
+                <div class="code">gxz-delivery</div>
+                <div class="port">Port: 8084</div>
+                <div class="details">骑手管理<br>配送调度<br>履约跟踪</div>
+            </div>
+        </div>
+
+        <!-- 支撑服务层 -->
+        <div class="layer" style="top: 530px;">
+            <div class="layer-title">支撑服务层</div>
+            <div class="service-node support-node">
+                <div class="icon">🎯</div>
+                <div class="name">营销促销服务</div>
+                <div class="code">gxz-promotion</div>
+                <div class="port">Port: 8085</div>
+                <div class="details">优惠券系统<br>促销活动<br>价格计算引擎</div>
+            </div>
+            <div class="service-node support-node">
+                <div class="icon">💳</div>
+                <div class="name">钱包财务服务</div>
+                <div class="code">gxz-wallet</div>
+                <div class="port">Port: 8086</div>
+                <div class="details">账户管理<br>资金流转<br>结算管理</div>
+            </div>
+            <div class="service-node support-node">
+                <div class="icon">🛠️</div>
+                <div class="name">运营管理服务</div>
+                <div class="code">gxz-admin</div>
+                <div class="port">Port: 8087</div>
+                <div class="details">权限管理<br>内容管理<br>数据统计</div>
+            </div>
+        </div>
+
+        <!-- 数据存储层 -->
+        <div class="layer" style="top: 670px;">
+            <div class="layer-title">数据存储层</div>
+            <div class="service-node data-node">
+                <div class="icon">🗃️</div>
+                <div class="name">MySQL</div>
+                <div class="code">Primary DB</div>
+                <div class="port">Port: 3306</div>
+                <div class="details">主从架构<br>业务数据<br>事务一致性</div>
+            </div>
+            <div class="service-node data-node">
+                <div class="icon">⚡</div>
+                <div class="name">Redis</div>
+                <div class="code">Cache</div>
+                <div class="port">Port: 6379</div>
+                <div class="details">哨兵集群<br>缓存加速<br>分布式锁</div>
+            </div>
+            <div class="service-node data-node">
+                <div class="icon">📁</div>
+                <div class="name">文件存储</div>
+                <div class="code">OSS</div>
+                <div class="port">HTTPS</div>
+                <div class="details">图片文档<br>CDN加速<br>对象存储</div>
+            </div>
+        </div>
+
+        <!-- 基础设施层 -->
+        <div class="layer" style="top: 800px;">
+            <div class="layer-title">基础设施层</div>
+            <div class="service-node infra-node">
+                <div class="icon">🧭</div>
+                <div class="name">Nacos</div>
+                <div class="code">Registry</div>
+                <div class="port">Port: 8848</div>
+                <div class="details">服务注册<br>配置管理<br>集群部署</div>
+            </div>
+            <div class="service-node infra-node">
+                <div class="icon">📊</div>
+                <div class="name">监控告警</div>
+                <div class="code">Monitor</div>
+                <div class="details">性能监控<br>异常告警<br>链路追踪</div>
+            </div>
+            <div class="service-node infra-node">
+                <div class="icon">📋</div>
+                <div class="name">日志系统</div>
+                <div class="code">Logging</div>
+                <div class="details">日志收集<br>实时分析<br>审计追溯</div>
+            </div>
+        </div>
+
+        <!-- 连接线 - 体现服务间关系和业务流程 -->
+        
+        <!-- 1. 基础架构连接 -->
+        <!-- 客户端到网关 -->
+        <div class="connection vertical" style="top: 205px; left: 799px; height: 35px;"></div>
+        
+        <!-- 网关到核心服务层 -->
+        <div class="connection vertical" style="top: 350px; left: 799px; height: 30px;"></div>
+        
+        <!-- 2. 外卖业务流程连接 -->
+        <!-- 用户→商户商品→订单（选择商品） -->
+        <div class="connection horizontal business-flow" style="top: 439px; left: 480px; width: 200px;"></div>
+        
+        <!-- 订单→配送（派单） -->
+        <div class="connection horizontal business-flow" style="top: 439px; left: 700px; width: 150px;"></div>
+        
+        <!-- 订单→营销（价格计算） -->
+        <div class="connection vertical business-flow" style="top: 490px; left: 639px; height: 40px;"></div>
+        
+        <!-- 配送→钱包（结算） -->
+        <div class="connection horizontal business-flow" style="top: 569px; left: 850px; width: 120px;"></div>
+        
+        <!-- 3. 团购业务流程连接 -->
+        <!-- 用户→营销（团购活动） -->
+        <div class="connection vertical data-flow" style="top: 490px; left: 549px; height: 40px;"></div>
+        
+        <!-- 营销→订单（团购下单） -->
+        <div class="connection horizontal data-flow" style="top: 569px; left: 570px; width: 70px;"></div>
+        
+        <!-- 4. B2B采购流程连接 -->
+        <!-- 商户→商户商品→订单（B2B采购） -->
+        <div class="connection horizontal data-flow" style="top: 420px; left: 480px; width: 200px;"></div>
+        
+        <!-- 5. 核心服务到支撑服务 -->
+        <div class="connection vertical" style="top: 490px; left: 799px; height: 40px;"></div>
+        
+        <!-- 6. 支撑服务到数据存储 -->
+        <div class="connection vertical" style="top: 605px; left: 799px; height: 65px;"></div>
+        
+        <!-- 7. 数据存储到基础设施 -->
+        <div class="connection vertical" style="top: 770px; left: 799px; height: 30px;"></div>
+        
+        <!-- 8. 用户服务内部连接（购物车→订单） -->
+        <div class="connection horizontal business-flow" style="top: 420px; left: 405px; width: 75px;"></div>
+
+        <!-- 技术栈信息面板 -->
+        <div class="info-panel" style="top: 100px; left: 50px;">
+            <h3>核心技术栈</h3>
+            <div class="info-item">
+                <div class="label">微服务框架</div>
+                <div class="value">
+                    <span class="tech-tag">Spring Boot 2.7</span>
+                    <span class="tech-tag">Spring Cloud</span>
+                    <span class="tech-tag">Spring Cloud Alibaba</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="label">数据存储</div>
+                <div class="value">
+                    <span class="tech-tag">MySQL 8.0</span>
+                    <span class="tech-tag">Redis 6.0</span>
+                    <span class="tech-tag">MyBatis Plus</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="label">基础设施</div>
+                <div class="value">
+                    <span class="tech-tag">Nacos</span>
+                    <span class="tech-tag">Docker</span>
+                    <span class="tech-tag">Nginx</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 部署信息面板 -->
+        <div class="info-panel" style="top: 100px; right: 50px;">
+            <h3>部署架构</h3>
+            <div class="info-item">
+                <div class="label">生产环境</div>
+                <div class="value">
+                    • 双机房部署，异地容灾<br>
+                    • 核心服务多实例负载均衡<br>
+                    • MySQL主从 + Redis哨兵<br>
+                    • Nginx反向代理
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="label">服务实例配置</div>
+                <div class="value">
+                    • Gateway: 2实例<br>
+                    • 订单支付服务: 3实例<br>
+                    • 其他核心服务: 2实例<br>
+                    • 支撑服务: 1-2实例
+                </div>
+            </div>
+        </div>
+
+        <!-- 业务流程标注 - 核心流程清晰化 -->
+        
+        <!-- 外卖流程标注 -->
+        <div class="flow-indicator takeaway" style="top: 350px; left: 50px;">外卖流程</div>
+        <div class="flow-indicator takeaway" style="top: 370px; left: 50px; font-size: 8px;">用户选商品→下单→支付→配送</div>
+        
+        <!-- 团购流程标注 -->
+        <div class="flow-indicator groupbuy" style="top: 420px; left: 50px;">团购流程</div>
+        <div class="flow-indicator groupbuy" style="top: 440px; left: 50px; font-size: 8px;">用户购券→到店核销→商户结算</div>
+        
+        <!-- B2B采购流程标注 -->
+        <div class="flow-indicator delivery" style="top: 490px; left: 50px;">B2B采购流程</div>
+        <div class="flow-indicator delivery" style="top: 510px; left: 50px; font-size: 8px;">商户采购→平台发货→物流配送</div>
+        
+        <!-- 核心交互流程 -->
+        <div class="flow-indicator" style="top: 390px; right: 120px;">购物车→订单</div>
+        <div class="flow-indicator takeaway" style="top: 430px; right: 50px;">订单→配送</div>
+        <div class="flow-indicator groupbuy" style="top: 520px; right: 200px;">团购券核销</div>
+        <div class="flow-indicator delivery" style="top: 560px; right: 80px;">配送结算</div>
+
+        <!-- 性能指标 - 修复重叠问题 -->
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-value">8</div>
+                <div class="metric-label">核心服务数</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">99.9%</div>
+                <div class="metric-label">系统可用性</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">&lt;200ms</div>
+                <div class="metric-label">响应时间</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">10K+</div>
+                <div class="metric-label">并发用户</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">95%</div>
+                <div class="metric-label">服务调用优化</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加交互效果
+        document.querySelectorAll('.service-node').forEach(node => {
+            node.addEventListener('mouseenter', function() {
+                this.style.zIndex = '20';
+            });
+            
+            node.addEventListener('mouseleave', function() {
+                this.style.zIndex = '2';
+            });
+        });
+
+        // 数据流动画
+        function animateConnections() {
+            const connections = document.querySelectorAll('.connection');
+            connections.forEach((conn, index) => {
+                conn.style.animationDelay = (index * 0.4) + 's';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', animateConnections);
+    </script>
+</body>
+</html>
